@@ -2,6 +2,8 @@ package com.java3y.austin.handler.action;
 
 import com.java3y.austin.common.domain.TaskInfo;
 import com.java3y.austin.common.dto.model.*;
+import com.java3y.austin.common.enums.ChannelType;
+import com.java3y.austin.common.enums.EnumUtil;
 import com.java3y.austin.common.pipeline.BusinessProcess;
 import com.java3y.austin.common.pipeline.ProcessContext;
 import com.java3y.austin.handler.config.SensitiveWordsConfig;
@@ -41,69 +43,61 @@ public class SensWordsAction implements BusinessProcess<TaskInfo> {
         if (ObjectUtils.isEmpty(sensDict)) {
             return;
         }
-        switch (context.getProcessModel().getMsgType()) {
-            // IM
-            case 10:
+        ChannelType channelType = EnumUtil.getEnumByCode(context.getProcessModel().getSendChannel(), ChannelType.class);
+        if (Objects.isNull(channelType)) {
+            return;
+        }
+        switch (channelType) {
+            case IM:
                 // 无文本内容，暂不做过滤处理
                 break;
-            // PUSH
-            case 20:
+            case PUSH:
                 PushContentModel pushContentModel =
                         (PushContentModel) context.getProcessModel().getContentModel();
                 pushContentModel.setContent(filter(pushContentModel.getContent(), sensDict));
                 break;
-            // SMS
-            case 30:
+            case SMS:
                 SmsContentModel smsContentModel =
                         (SmsContentModel) context.getProcessModel().getContentModel();
                 smsContentModel.setContent(filter(smsContentModel.getContent(), sensDict));
                 break;
-            // EMAIL
-            case 40:
+            case EMAIL:
                 EmailContentModel emailContentModel =
                         (EmailContentModel) context.getProcessModel().getContentModel();
                 emailContentModel.setContent(filter(emailContentModel.getContent(), sensDict));
                 break;
-            // OFFICIAL_ACCOUNT
-            case 50:
+            case OFFICIAL_ACCOUNT:
                 // 无文本内容，暂不做过滤处理
                 break;
-            // MINI_PROGRAM
-            case 60:
+            case MINI_PROGRAM:
                 // 无文本内容，暂不做过滤处理
                 break;
-            // ENTERPRISE_WE_CHAT
-            case 70:
+            case ENTERPRISE_WE_CHAT:
                 EnterpriseWeChatContentModel enterpriseWeChatContentModel =
                         (EnterpriseWeChatContentModel) context.getProcessModel().getContentModel();
                 enterpriseWeChatContentModel.setContent(filter(enterpriseWeChatContentModel.getContent(), sensDict));
                 break;
-            // DING_DING_ROBOT
-            case 80:
+            case DING_DING_ROBOT:
                 DingDingRobotContentModel dingDingRobotContentModel =
                         (DingDingRobotContentModel) context.getProcessModel().getContentModel();
                 dingDingRobotContentModel.setContent(filter(dingDingRobotContentModel.getContent(), sensDict));
                 break;
-            // DING_DING_WORK_NOTICE
-            case 90:
+            case DING_DING_WORK_NOTICE:
                 DingDingWorkContentModel dingDingWorkContentModel =
                         (DingDingWorkContentModel) context.getProcessModel().getContentModel();
                 dingDingWorkContentModel.setContent(filter(dingDingWorkContentModel.getContent(), sensDict));
                 break;
-            // ENTERPRISE_WE_CHAT_ROBOT
-            case 100:
+            case ENTERPRISE_WE_CHAT_ROBOT:
                 EnterpriseWeChatRobotContentModel enterpriseWeChatRobotContentModel =
                         (EnterpriseWeChatRobotContentModel) context.getProcessModel().getContentModel();
                 enterpriseWeChatRobotContentModel.setContent(filter(enterpriseWeChatRobotContentModel.getContent(), sensDict));
                 break;
-            // FEI_SHU_ROBOT
-            case 110:
+            case FEI_SHU_ROBOT:
                 FeiShuRobotContentModel feiShuRobotContentModel =
                         (FeiShuRobotContentModel) context.getProcessModel().getContentModel();
                 feiShuRobotContentModel.setContent(filter(feiShuRobotContentModel.getContent(), sensDict));
                 break;
-            // ALIPAY_MINI_PROGRAM
-            case 120:
+            case ALIPAY_MINI_PROGRAM:
                 // 无文本内容，暂不做过滤处理
                 break;
             default:
